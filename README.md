@@ -55,7 +55,7 @@ emotion-music-system/
 
 ## データセット
 
-* acial Expression Image Data AFFECTNET YOLO Format
+* Facial Expression Image Data AFFECTNET YOLO Format
   * [https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format](https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format)
     * We're going to use 4 emotions:
       * **Anger, Sad, Happy, Neutral**
