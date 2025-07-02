@@ -1,8 +1,15 @@
-# Emotion Music System　※デモで書いただけなので後から適切なものに修正してください
+# TEAM5 : Emotion Music System
 
 🎵 **Emotion Music System** は、ユーザーの表情を認識して感情を分類し、その感情に対応する音楽を自動再生するPythonベースのリアルタイムシステムです。
 
 ---
+
+# Member list and
+
+1. m5281014, Yusei Ichikawa プレゼン作成、見せ方を考える
+2. m5281030, NAKAMURA Zen システム構築
+3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す
+4. m5291067, SHU Hoshitaka システム構築
 
 ## 🧠 システム概要
 
@@ -45,7 +52,6 @@ emotion-music-system/
 
 - [YOLOv5 / YOLOv8](https://github.com/ultralytics/yolov5)（Google Colab でファインチューニング済みモデルを使用）
 - 感情分類：Angry / Sad / Happy / Neutral（4クラス）
-
 
 ## データセット
 
