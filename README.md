@@ -28,7 +28,11 @@ emotion-music-system/
 
 
 ├── music/                         # 音楽ファイルを格納
+
+
 ├── .gitignore                     # Git除外設定
+
+
 └── README.md                      # このファイル
 
 ---
