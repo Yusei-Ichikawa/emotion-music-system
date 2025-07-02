@@ -31,9 +31,16 @@ try:
         response = requests.post(COLAB_URL, json={"image": img_base64})
         if response.status_code == 200:
             result = response.json()
-            print(f"🧠 感情推論結果: {result.get('emotion')}")
+            emotion = result.get("emotion", "")
+            print(f"🧠 感情推論結果: {emotion}")
+
+            # ✅ ここでファイルに保存（←この部分を追加！）
+            with open("latest_emotion.txt", "w") as f:
+                f.write(emotion)
+
         else:
             print(f"❌ 推論失敗: {response.status_code}")
+
 
         time.sleep(CAPTURE_INTERVAL)
 
