@@ -1,0 +1,41 @@
+# Emotion Music System　※デモで書いただけなので後から適切なものに修正してください
+
+🎵 **Emotion Music System** は、ユーザーの表情を認識して感情を分類し、その感情に対応する音楽を自動再生するPythonベースのリアルタイムシステムです。
+
+---
+
+## 🧠 システム概要
+
+- ノートPCのWebカメラで映像を取得
+- 取得した画像をGoogle Colab上のYOLOモデルに送信
+- YOLOで「怒り・悲しみ・笑い・真顔」の4つの感情を推論
+- 推論結果に応じて、ローカルPC上で対応する音楽を再生
+
+---
+
+## 🏗️ 構成ファイル
+
+emotion-music-system/
+├── send_image_to_colab.py # Webカメラ画像をColabへ送信
+├── play_music_by_emotion.py # 感情に応じて音楽を再生
+├── emotion_music_config.json # 感情と音楽ファイルのマッピング
+├── music/ # 音楽ファイルを格納
+├── .gitignore # Git除外設定
+└── README.md # このファイル
+
+---
+
+## ⚙️ 開発環境　※適当なので後で編集してください
+
+- Python 3.8+
+- OpenCV (`cv2`)
+- requests
+- Flask（Colab側）
+- pygame（ローカルの音楽再生で使用予定）
+
+---
+
+## 🚀 使用予定モデル
+
+- [YOLOv5 / YOLOv8](https://github.com/ultralytics/yolov5)（Google Colab でファインチューニング済みモデルを使用）
+- 感情分類：Angry / Sad / Happy / Neutral（4クラス）
