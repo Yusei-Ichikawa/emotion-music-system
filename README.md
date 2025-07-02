@@ -4,7 +4,7 @@
 
 ---
 
-# Member list and
+# Member list and role
 
 1. m5281014, Yusei Ichikawa プレゼン作成、見せ方を考える
 2. m5281030, NAKAMURA Zen システム構築
