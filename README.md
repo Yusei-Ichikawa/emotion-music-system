@@ -17,21 +17,15 @@
 
 emotion-music-system/
 
-
 ├── send_image_to_colab.py         # Webカメラ画像をColabへ送信
-
 
 ├── play_music_by_emotion.py       # 感情に応じて音楽を再生
 
-
 ├── emotion_music_config.json      # 感情と音楽ファイルのマッピング
-
 
 ├── music/                         # 音楽ファイルを格納
 
-
 ├── .gitignore                     # Git除外設定
-
 
 └── README.md                      # このファイル
 
@@ -51,3 +45,9 @@ emotion-music-system/
 
 - [YOLOv5 / YOLOv8](https://github.com/ultralytics/yolov5)（Google Colab でファインチューニング済みモデルを使用）
 - 感情分類：Angry / Sad / Happy / Neutral（4クラス）
+
+
+## データセット
+
+* acial Expression Image Data AFFECTNET YOLO Format
+  * [https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format](https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format)
