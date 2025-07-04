@@ -15,7 +15,10 @@
 
 ## 🧠 System Overview
 
-* The system captures the user's face using a laptop webcam
+* >>> The system captures the user's face using a laptop webcam
+  >>>
+  >>
+  >
 * The captured image is sent to a YOLO model running on Google Colab
 * The YOLO model predicts one of four emotions:
 
