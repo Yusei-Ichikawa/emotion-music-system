@@ -1,0 +1,2 @@
+python train.py --img 224 --batch 16 --epochs 30 \
+  --data data.yaml --weights yolov5s.pt --name emotion_yolo

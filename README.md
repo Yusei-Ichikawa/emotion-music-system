@@ -24,6 +24,12 @@
 
 emotion-music-system/
 
+├──fine-tune/
+
+    ├──data.yaml
+
+    ├──train_command.txt
+
 ├── send_image_to_colab.py         # Webカメラ画像をColabへ送信
 
 ├── play_music_by_emotion.py       # 感情に応じて音楽を再生
