@@ -66,3 +66,5 @@ emotion-music-system/
   * [https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format](https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format)
     * We're going to use 4 emotions:
       * **Anger, Sad, Happy, Neutral**
+
+## ゴール
