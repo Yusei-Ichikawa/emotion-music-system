@@ -24,11 +24,11 @@
 
 emotion-music-system/
 
-├──fine-tune/
+├──fine-tune/　　　#ファインチューニング用フォルダ
 
     ├──data.yaml
 
-    ├──train_command.txt
+    ├──train_command.txt　　　#ファインチューイングコマンド
 
 ├── send_image_to_colab.py         # Webカメラ画像をColabへ送信
 
@@ -56,8 +56,9 @@ emotion-music-system/
 
 ## 🚀 使用予定モデル
 
-- [YOLOv5 / YOLOv8](https://github.com/ultralytics/yolov5)（Google Colab でファインチューニング済みモデルを使用）
+- [YOLOv5 / YOLOv8](https://github.com/ultralytics/yolov5)（Google Colab で事前学習済みモデルを使用）
 - 感情分類：Angry / Sad / Happy / Neutral（4クラス）
+  - 最終層だけ4クラスに分けて再学習するだけで十分
 
 ## データセット
 
