@@ -7,7 +7,7 @@ from ultralytics import YOLO
 # source="movies/543618324613824613.mp4"
 def run_detection(source="movies/ScreenRecordin.mov", conf=0.5, show=True):
     # 訓練済みモデルのロード
-    model = YOLO("runs/detect/train/weights/best.pt")
+    model = YOLO("../runs/detect/train/weights/best.pt")
 
     results = model.predict(
         source=source,
@@ -18,7 +18,7 @@ def run_detection(source="movies/ScreenRecordin.mov", conf=0.5, show=True):
     for i, result in enumerate(results):
         #results.show()
         if i%50==0:
-            result.save(filename=f"facial_emotion_detection/img_{i}.jpg")
+            result.save(filename=f"../facial_emotion_detection/img_{i}.jpg")
 
     return results
 

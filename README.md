@@ -30,13 +30,15 @@
 
         ├── YOLO_format/                   # 8クラス表情認識のデータセット
 
-        ├── train.py                       # YOLO11を用いて学習
+        ├── src                            # Sorce Code
 
-        ├── main.py                        # Webカメラ動画から表情検出、音楽再生
+            ├── train.py                   # YOLO11を用いて学習
 
-        ├── detector.py                    # 表情認識クラス（表情認識し、クラスとBounding Boxを表示させる）
+            ├── main.py                    # Webカメラ動画から表情検出、音楽再生
 
-        ├── music_player.py                # 音楽再生クラス（表情認識したクラスごとに音楽を再生させる）
+            ├── detector.py                # 表情認識クラス（表情認識し、クラスとBounding Boxを表示させる）
+
+            ├── music_player.py            # 音楽再生クラス（表情認識したクラスごとに音楽を再生させる）
 
         ├── best.pt                        # 推論に使うYOLO11の重み
 
@@ -54,8 +56,7 @@
 
 - Python 3.8+
 - OpenCV (`cv2`)
-- requests
-- Flask（Colab側）
+- ult
 - pygame（ローカルの音楽再生で使用予定）
 
 ---

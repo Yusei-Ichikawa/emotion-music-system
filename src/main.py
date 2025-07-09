@@ -3,8 +3,8 @@ from detector import FaceExpressionDetector
 from music_player import MusicPlayer
 
 # 推論用クラスと音楽再生クラスを初期化
-detector = FaceExpressionDetector('best.pt')
-music = MusicPlayer('music')
+detector = FaceExpressionDetector('../best.pt')
+music = MusicPlayer('../music')
 
 # Webカメラからビデオキャプチャ開始（0 = default camera）
 cap = cv2.VideoCapture(0)
