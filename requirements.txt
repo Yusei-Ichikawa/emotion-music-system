@@ -1,0 +1,5 @@
+# pip install -r requirements.txt
+
+opencv_python==4.12.0.88
+pygame==2.6.1
+ultralytics==8.3.162
