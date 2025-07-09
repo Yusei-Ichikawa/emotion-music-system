@@ -20,8 +20,8 @@ venv/
 .DS_Store
 
 # 音楽を入れるファイル
-music/
 runs/detect/train/weights/*.pt
 yolo11x.pt
 runs/detect/train/weights/*.pt
 yolo11x.pt
+YOLO_format/
