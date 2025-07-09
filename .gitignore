@@ -21,3 +21,5 @@ venv/
 
 # 音楽を入れるファイル
 music/
+runs/detect/train/weights/*.pt
+yolo11x.pt
