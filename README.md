@@ -26,21 +26,21 @@ emotion-music-system/
 
 ├──fine-tune/　　　#ファインチューニング用フォルダ
 
-    ├──data.yaml
-
-    ├──train_command.txt　　　#ファインチューイングコマンド
-
-├── send_image_to_colab.py         # Webカメラ画像をColabへ送信
-
-├── play_music_by_emotion.py       # 感情に応じて音楽を再生
-
-├── emotion_music_config.json      # 感情と音楽ファイルのマッピング
-
-├── music/                         # 音楽ファイルを格納
-
-├── .gitignore                     # Git除外設定
-
-└── README.md                      # このファイル
+        ├──data.yaml
+    
+        ├──train_command.txt　　　#ファインチューイングコマンド
+    
+    ├── send_image_to_colab.py         # Webカメラ画像をColabへ送信
+    
+    ├── play_music_by_emotion.py       # 感情に応じて音楽を再生
+    
+    ├── emotion_music_config.json      # 感情と音楽ファイルのマッピング
+    
+    ├── music/                         # 音楽ファイルを格納
+    
+    ├── .gitignore                     # Git除外設定
+    
+    └── README.md                      # このファイル
 
 ---
 
