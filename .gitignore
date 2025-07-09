@@ -23,3 +23,5 @@ venv/
 music/
 runs/detect/train/weights/*.pt
 yolo11x.pt
+runs/detect/train/weights/*.pt
+yolo11x.pt
