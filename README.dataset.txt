@@ -3,4 +3,3 @@ https://universe.roboflow.com/vesselsobjectdetection202308/facial-emotion-detect
 
 Provided by a Roboflow user
 License: CC BY 4.0
-
