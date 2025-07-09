@@ -56,7 +56,7 @@
 
 - Python 3.8+
 - OpenCV (`cv2`)
-- ult
+- ultralytics
 - pygame（ローカルの音楽再生で使用予定）
 
 ---
