@@ -9,8 +9,21 @@ class MusicPlayer:
         self.current_audio_label = None
 
     def play(self, expression):
+        # "Anger": # 怒り: 赤
+        # "Disgust": # 嫌悪: 濃い緑
+        # "Fear": # 恐れ: 紫
+        # "Happy": # 喜び: 黄色
+        # "Sad": # 悲しみ; 水色
+        # "Surprise": # 驚き: 黄緑
+        # "Neutral": # 中立: グレー
+        # "Contempt": # 軽蔑: 青
         # 音楽ファイルのパスを生成
-        audio_path = os.path.join(self.music_dir, expression.lower() + '.mp3')
+        # audio_path = os.path.join(self.music_dir, expression.lower() + '.mp3')
+        if expression == "Anger" or expression == "Contempt":
+            expression = "Anger"
+        elif expression == "Fear" or expression == "Disgust":
+            expression = "Fear"
+        audio_path = os.path.join(self.music_dir, expression.lower() + '.mid')
         if self.current_audio_label != expression:
             if self.current_audio_label is not None:
                 pygame.mixer.music.stop()
