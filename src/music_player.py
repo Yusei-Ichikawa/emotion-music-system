@@ -29,7 +29,7 @@ class MusicPlayer:
                 pygame.mixer.music.stop()
             if os.path.exists(audio_path):
                 pygame.mixer.music.load(audio_path)
-                pygame.mixer.music.play()
+                pygame.mixer.music.play(-1)
                 self.current_audio_label = expression
 
     def stop(self):
