@@ -17,6 +17,11 @@ class MusicPlayer:
         # "Surprise": # 驚き: 黄緑
         # "Neutral": # 中立: グレー
         # "Contempt": # 軽蔑: 青
+        # group1: happy
+        # group2: anger, fear
+        # group3: sad, disgust, contempt
+        # group4: surprise
+        # group5: neutral
         # 音楽ファイルのパスを生成
         # audio_path = os.path.join(self.music_dir, expression.lower() + '.mp3')
         if expression == "Anger" or expression == "Contempt":
