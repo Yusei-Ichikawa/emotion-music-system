@@ -1,9 +1,12 @@
 import pygame
 import os
 
+music_dir_1 = "music/ver1"
+music_dir_2 = "music/ver2"
+
 # 音楽再生用クラス
 class MusicPlayer:
-    def __init__(self, music_dir='music'):
+    def __init__(self, music_dir=music_dir_1):
         pygame.mixer.init()
         self.music_dir = music_dir
         self.current_audio_label = None
@@ -24,9 +27,9 @@ class MusicPlayer:
         # group5: neutral
         # 音楽ファイルのパスを生成
         # audio_path = os.path.join(self.music_dir, expression.lower() + '.mp3')
-        if expression == "Anger" or expression == "Contempt":
+        if expression == "Anger" or expression == "Fear":
             expression = "Anger"
-        elif expression == "Fear" or expression == "Disgust":
+        elif expression == "sad" or expression == "Disgust" or expression == "Contempt":
             expression = "Fear"
         audio_path = os.path.join(self.music_dir, expression.lower() + '.mid')
         if self.current_audio_label != expression:
