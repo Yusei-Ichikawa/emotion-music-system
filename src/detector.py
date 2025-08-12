@@ -21,13 +21,11 @@ class FaceExpressionDetector:
     def detect_and_draw(self, frame):
         # 推論
         results = self.model(frame, conf=0.5)
-        predicted_expression = None
+        predicted_expressions = []
         # 検出があれば処理
         if len(results) > 0:
             result = results[0]
             boxes = result.boxes
-            max_confidence = 0.0
-            best_label = None
 
             for box in boxes:
                 conf = float(box.conf[0])
@@ -52,11 +50,7 @@ class FaceExpressionDetector:
                 # ラベル文字
                 cv2.putText(frame, f"{label} {conf*100:.1f}", (text_x, text_y), font, font_scale, (0, 0, 0), thickness, cv2.LINE_AA)
 
-                # 信頼度が最大のクラスを推論ラベルとする
-                if conf > max_confidence:
-                    max_confidence = conf
-                    best_label = label
+                # 全ての検出された表情ラベルを保存
+                predicted_expressions.append(label)
 
-            if best_label:
-                predicted_expression = best_label
-        return frame, predicted_expression
+        return frame, predicted_expressions
