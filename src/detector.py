@@ -21,42 +21,54 @@ class FaceExpressionDetector:
     def detect_and_draw(self, frame):
         # 推論
         results = self.model(frame, conf=0.5)
-        predicted_expression = None
-        # 検出があれば処理
+        picks = []  # (conf, label, (x1,y1,x2,y2))
+
         if len(results) > 0:
             result = results[0]
             boxes = result.boxes
-            max_confidence = 0.0
-            best_label = None
 
             for box in boxes:
                 conf = float(box.conf[0])
                 cls = int(box.cls[0])
-                x1, y1, x2, y2 = box.xyxy[0]
-                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
                 label = result.names.get(cls, "")
-                box_color = self.emotion_colors.get(label, (255, 255, 255)) # 未登録なら白
+                picks.append((conf, label, (x1, y1, x2, y2)))
 
-                # ラベル背景と文字描画
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                font_scale = 1.5
-                thickness = 3
-                (tw, th), baseline = cv2.getTextSize(f"{label} {conf*100:.1f}", font, font_scale, thickness)
-                text_x = x1 + 1
-                text_y = y1 + int(font_scale*22)
-                # 背景色
-                cv2.rectangle(frame, (x1, y1), (x1+tw+1, y1+th+2), box_color, -1)
-                # バウンディングボックス
-                cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 4)
-                # ラベル文字
-                cv2.putText(frame, f"{label} {conf*100:.1f}", (text_x, text_y), font, font_scale, (0, 0, 0), thickness, cv2.LINE_AA)
+        # --- 上位2件だけに絞る（conf降順） ---
+        picks.sort(key=lambda x: x[0], reverse=True)
+        picks = picks[:2]
 
-                # 信頼度が最大のクラスを推論ラベルとする
-                if conf > max_confidence:
-                    max_confidence = conf
-                    best_label = label
+        # --- 2人に満たないときは None で埋める ---
+        while len(picks) < 2:
+            picks.append((0.0, None, None))
 
-            if best_label:
-                predicted_expression = best_label
-        return frame, predicted_expression
+        # 描画 & ラベル確定（常に2要素）
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 1.5
+        thickness = 3
+        predicted_expressions_fixed = []
+
+        for conf, label, xyxy in picks:
+            if label is None or xyxy is None:
+                predicted_expressions_fixed.append(None)  # ← JSON化で null
+                continue
+
+            x1, y1, x2, y2 = xyxy
+            box_color = self.emotion_colors.get(label, (255, 255, 255))
+
+            # ラベル背景と文字描画
+            text = f"{label} {conf*100:.1f}"
+            (tw, th), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+            text_x = x1 + 1
+            text_y = y1 + int(font_scale*22)
+
+            # 背景色
+            cv2.rectangle(frame, (x1, y1), (x1 + tw + 1, y1 + th + 2), box_color, -1)
+            # バウンディングボックス
+            cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 4)
+            # ラベル文字
+            cv2.putText(frame, text, (text_x, text_y), font, font_scale, (0, 0, 0), thickness, cv2.LINE_AA)
+
+            predicted_expressions_fixed.append(label)
+
+        return frame, predicted_expressions_fixed  # 例: ['Surprise', None]
