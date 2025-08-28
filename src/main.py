@@ -1,12 +1,14 @@
 import cv2
 from detector import FaceExpressionDetector
-from music_player import MusicPlayer
+# from music_player import MusicPlayer
 
 from collections import deque, Counter
 
+import test
+
 # 推論用クラスと音楽再生クラスを初期化
 detector = FaceExpressionDetector('../best.pt')
-music = MusicPlayer('../music')
+# music = MusicPlayer('../music')
 
 # Webカメラからビデオキャプチャ開始（0 = default camera）
 cap = cv2.VideoCapture(0)
@@ -19,6 +21,8 @@ threshold_frames = 90  # 3秒程度(30fps想定)
 expression_history = deque(maxlen=threshold_frames)
 
 current_playing_expression = ""  # 初期状態は中立
+
+test.start_music()
 
 while True:
     ret, frame = cap.read()
@@ -36,13 +40,14 @@ while True:
 
     # 履歴が閾値フレーム数に達したら、最頻の表情に基づいて音楽を再生
     if len(expression_history) == threshold_frames:
+        tuple_history = [tuple(e) for e in expression_history]
         # 過去3秒で最も多く検出された表情を計算
-        most_common_expression = Counter(expression_history).most_common(1)[0][0]
-
-        # 現在再生中の表情と異なる場合のみ、新しい曲を再生
-        if most_common_expression != current_playing_expression:
-            music.play(most_common_expression)
-            current_playing_expression = most_common_expression
+        most_common_expression = Counter(tuple_history).most_common(1)[0][0]
+        test.set_expression(most_common_expression)
+        # # 現在再生中の表情と異なる場合のみ、新しい曲を再生
+        # if most_common_expression != current_playing_expression:
+        #     music.play(most_common_expression)
+        #     current_playing_expression = most_common_expression
     # =========================
     # =========================
 
@@ -68,4 +73,5 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-music.stop()
+# music.stop()
+test.stop_music()
