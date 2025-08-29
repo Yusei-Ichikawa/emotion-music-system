@@ -23,3 +23,5 @@ venv/
 runs/detect/train/weights/*.pt
 yolo11x.pt
 YOLO_format/
+
+FluidR3_GM/
