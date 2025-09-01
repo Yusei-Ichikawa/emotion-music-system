@@ -42,7 +42,7 @@ while True:
         tuple_history = [tuple(e) for e in expression_history]
         # 過去3秒で最も多く検出された表情を計算
         most_common_expression = Counter(tuple_history).most_common(1)[0][0]
-        test.set_expression(most_common_expression)
+        test.set_expression(most_common_expression, frame)
     # =========================
 
     # 映像表示

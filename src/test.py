@@ -4,9 +4,10 @@ import threading
 import random
 import fluidsynth
 import sys
+import cv2
 
 # ========= 基本設定（初期値） =========
-SOUNDFONT_PATH = "../music/FluidR3_GM/FluidR3_GM.sf2"
+SOUNDFONT_PATH = "../FluidR3_GM/FluidR3_GM.sf2"
 INITIAL_BPM   = 100
 INITIAL_SWING = 0.00
 MASTER_GAIN   = 0.85
@@ -56,62 +57,57 @@ set_channel_volumes()
 
 # ========= 共有パラメータ（ロック保護） =========
 state_lock = threading.RLock()
-state = {
-    "bpm": INITIAL_BPM,
-    "swing": INITIAL_SWING,
-    "key_shift": 0,                 # 半音移調（0=そのまま）
-    "progression_name": "twinkle",  # デフォルト
-    "mel_vol": 120,
-    "chd_vol": 80,
-    "gtr_vol": 90,
-    "bass_vol": 150,
-    "strings_vol": 80, # ストリングス
-    "brass_vol": 80,   # ブラス
-}
+def make_initial_state(INITIAL_BPM: int, INITIAL_SWING: float) -> dict:
+    s = {
+        "bpm": INITIAL_BPM,
+        "swing": INITIAL_SWING,
+        "key_shift": 0,                   # 半音移調（0=そのまま）
+        "progression_name": "twinkle",    # デフォルト進行
 
-# 感情プリセットで使う内部フラグ
-state.update({
-    "emotion_group": "neutral",  # 現在の感情
-    "drum_energy": 1,            # 0=静か, 1=普通, 2=元気
-})
+        # 各パート音量
+        "mel_vol": 120,
+        "chd_vol": 80,
+        "gtr_vol": 90,
+        "bass_vol": 150,
+        "strings_vol": 80,  # ストリングス
+        "brass_vol": 80,    # ブラス
 
-# 実効BPM（現在鳴っているテンポ）と、次小節から反映する保留値
-state.update({
-    "active_bpm": state["bpm"],  # 実効テンポ
-    "pending_bpm": None,         # 次小節で適用するBPM（絶対値）
-    "pending_prog": None,        # 次小節で適用する進行名
-    "pending_key": None,         # 次小節で適用する移調
-})
+        # 感情系
+        "emotion_group": "neutral",  # 現在の感情
+        "drum_energy": 1,            # 0=静か, 1=普通, 2=元気
 
-# ── 極端プリセット用の追加ノブ ──
-state.update({
-    "melody_oct": 0,          # メロディのオクターブ移動（±12など）
-    "vel_scale": {            # 各パートのベロシティ倍率
-        "melody": 1.0, "chord": 1.0, "guitar": 1.0, "bass": 1.0
-    },
-    "drum_hat_div": 16,       # ハイハット分解能 8 / 16 / 32
-    "drum_fill_rate": 1,      # 0=無し, 1=普通, 2=多め
-    "bass_style": "drive",    # "drive"(8分), "pump"(4分重), "walk"(ｳｫｰｸ)
-    "guitar_patch": ("clean", 27),  # ("clean",27) or ("dist",30 など)
-})
+        # 実効テンポと次小節反映用
+        "active_bpm": INITIAL_BPM,   # 実効テンポ
+        "pending_bpm": None,         # 次小節で適用するBPM（絶対値）
+        "pending_prog": None,        # 次小節で適用する進行名
+        "pending_key": None,         # 次小節で適用する移調
 
-# ── ボリュームのグライド用状態 ──
-state.update({
-    # 現在鳴っている実効値
-    "active_vol": {
-        "melody": state.get("mel_vol", 120),
-        "chord":  state.get("chd_vol", 80),
-        "guitar": state.get("gtr_vol", 90),
-        "bass":   state.get("bass_vol",110),
+        # 極端プリセット用ノブ
+        "melody_oct": 0,             # メロディのオクターブ移動（±12など）
+        "vel_scale": {               # 各パートのベロシティ倍率
+            "melody": 1.0, "chord": 1.0, "guitar": 1.0, "bass": 1.0
+        },
+        "drum_hat_div": 16,          # ハイハット分解能 8 / 16 / 32
+        "drum_fill_rate": 1,         # 0=無し, 1=普通, 2=多め
+        "bass_style": "drive",       # "drive"(8分), "pump"(4分重), "walk"(ｳｫｰｸ)
+        "guitar_patch": ("clean", 27),  # ("clean",27) or ("dist",30 など)
+
+        # ボリューム・グライド
+        "target_vol": {},            # 目標値（感情切替や vol コマンドで更新）
+        "vol_glide_alpha": 0.6,      # 1小節ごとにどれだけ近づくか（0.0〜1.0）
+    }
+    # 他キーに依存する派生値を最後にまとめて定義
+    s["active_vol"] = {
+        "melody": s["mel_vol"],
+        "chord":  s["chd_vol"],
+        "guitar": s["gtr_vol"],
+        "bass":   s.get("bass_vol", 110),
         # 使っている方だけあればOK（両方あっても可）
-        "strings": state.get("strings_vol", 95) if 'CH_STRINGS' in globals() else None,
-        "brass":   state.get("brass_vol",   95) if 'CH_BRASS'   in globals() else None,
-    },
-    # 目標値（感情切替時や vol コマンドで更新）
-    "target_vol": {},
-    # 1小節ごとにどれだけ近づくか（0.0〜1.0、0.6なら60%寄せる）
-    "vol_glide_alpha": 0.6,
-})
+        "strings": s.get("strings_vol", 95) if 'CH_STRINGS' in globals() else None,
+        "brass":   s.get("brass_vol",   95) if 'CH_BRASS'   in globals() else None,
+    }
+    return s
+state = make_initial_state(INITIAL_BPM, INITIAL_SWING)
 
 def _send_cc7(part: str, value: int):
     """パート名→チャンネルにマップしてCC7送信"""
@@ -252,7 +248,7 @@ EMOTION_PRESETS = {
         "drum_hat_div": 16,        # 32分ハイハットでキラキラ
         "drum_fill_rate": 2,       # フィル多め
         "bass_style": "drive",     # 8分で推進
-        # "melody_oct": +12,         # メロディ1オクターブ↑
+        "melody_oct": +12,         # メロディ1オクターブ↑
         "melody_oct": 0,          # メロディはオクターブそのまま
         "vel_scale": {"melody":1.15,"chord":0.85,"guitar":1.05,"bass":1.10},
         "guitar_patch": ("clean", 27),
@@ -269,7 +265,7 @@ EMOTION_PRESETS = {
         "drum_hat_div": 8,
         "drum_fill_rate": 2,
         "bass_style": "drive",
-        "melody_oct": 0,
+        "melody_oct": -12,
         "vel_scale": {"melody":1.05,"chord":0.80,"guitar":1.20,"bass":1.20},
         "guitar_patch": ("clean", 27),   # ← ディストーション
         "progression": "marusa",  # 暗めの進行に変更
@@ -285,7 +281,7 @@ EMOTION_PRESETS = {
         "drum_hat_div": 8,
         "drum_fill_rate": 0,
         "bass_style": "pump",      # 4分主体で重く
-        # "melody_oct": -12,         # メロディ1オクターブ↓
+        "melody_oct": -12,         # メロディ1オクターブ↓
         "melody_oct": 0,          # メロディはオクターブそのまま
         "vel_scale": {"melody":0.95,"chord":0.75,"guitar":0.80,"bass":0.90},
         "guitar_patch": ("clean", 27),
@@ -302,7 +298,7 @@ EMOTION_PRESETS = {
         "drum_hat_div": 16,
         "drum_fill_rate": 2,
         "bass_style": "drive",
-        # "melody_oct": +12,
+        "melody_oct": +12,
         "melody_oct": 0,          # メロディはオクターブそのまま
         "vel_scale": {"melody":1.20,"chord":0.80,"guitar":1.05,"bass":1.05},
         "guitar_patch": ("clean", 27),
@@ -711,7 +707,7 @@ def start_music():
 def stop_music():
     state["running"] = False
 
-def set_expression(most_common_expression):
+def set_expression(most_common_expression, frame):
     if isinstance(most_common_expression, (list, tuple)):
         key = tuple(s.lower() if isinstance(s, str) else None for s in most_common_expression)
     else:
@@ -730,10 +726,11 @@ def set_expression(most_common_expression):
     }
 
     g = mapping.get(key)
+    cv2.putText(frame, g, (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 3)
     if g:
         apply_emotion_group(g)
     else:
-        print(f"[expression] unknown: {most_common_expression}")
+        pass
 
 if __name__ == "__main__":
     start_music()
