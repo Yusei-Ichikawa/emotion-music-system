@@ -217,9 +217,9 @@ def apply_emotion_group(gname: str):
         name, prog = p["guitar_patch"]
         fs.program_select(CH_GUIT, sfid, 0, prog)
 
-        cur_bpm = state.get("active_bpm", state["bpm"])
-        print(f"[emotion] -> {gname}  (BPM now={cur_bpm:.1f}, next={state['pending_bpm']}, "
-            f"swing={state['swing']}, key next={state['pending_key']}, guitar={name}, prog={state["pending_prog"]})",)
+        # cur_bpm = state.get("active_bpm", state["bpm"])
+        # print(f"[emotion] -> {gname}  (BPM now={cur_bpm:.1f}, next={state['pending_bpm']}, "
+        #     f"swing={state['swing']}, key next={state['pending_key']}, guitar={name}, prog={state["pending_prog"]})",)
 
 # ========= 進行プリセット =========
 PROGRESSIONS = {
@@ -400,52 +400,6 @@ def schedule_brass_bar(chord_name, bar_start_abs):
                 top = max(mids) + 12
                 schedule_note(CH_BRASS, top, base_vel-6, t + len(mids)*micro, 0.22, bar_start_abs, swing=False)
 
-# ========= コンソール入力（非ブロッキング） =========
-def print_help():
-    print(
-        "\n[Controls]\n"
-        # "  bpm <n>        : set BPM (例: bpm 108)\n"
-        # "  bpm +n/-n      : relative BPM change (例: bpm +4)\n"
-        # "  swing <0-0.35> : set swing amount (例: swing 0.12)\n"
-        # "  prog <name>    : set progression [twinkle | marusa | pop1541]\n"
-        # "  key <+/-n>     : transpose semitones (例: key +2)\n"
-        # "  vol <part> <n> : set channel volume; part = melody|chord|guitar|bass (0-127)\n"
-        "  emo <group>    : apply emotion group [group1..group5]\n"
-        "  help           : show this help\n"
-        "  quit           : exit\n"
-    )
-
-def console_reader():
-    global _running
-    print_help()
-    while _running:
-        try:
-            line = sys.stdin.readline()
-            if not line:
-                time.sleep(0.1)
-                continue
-            cmd = line.strip().split()
-            if not cmd:
-                continue
-            if cmd[0] == "quit":
-                break
-            elif cmd[0] == "help":
-                print_help()
-            elif cmd[0] == "emo" and len(cmd) >= 2:
-                # 例: emo group1 / emo group3
-                apply_emotion_group(cmd[1].lower())
-            else:
-                print("Unknown command. Type 'help'.")
-        except Exception as e:
-            print("Input error:", e)
-            time.sleep(0.1)
-    # quit
-    _running = False
-    with _event_cv:
-        _event_cv.notify_all()
-
-# _input_thread = threading.Thread(target=console_reader, daemon=True)
-# _input_thread.start()
 _PLAYER_THREAD = None
 _STARTED = False
 
