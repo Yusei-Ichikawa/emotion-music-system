@@ -4,7 +4,7 @@ from detector import FaceExpressionDetector
 
 from collections import deque, Counter
 
-import test
+import music.test as test
 
 # 推論用クラスと音楽再生クラスを初期化
 detector = FaceExpressionDetector('../best.pt')

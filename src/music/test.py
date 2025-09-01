@@ -7,7 +7,7 @@ import sys
 import cv2
 
 # ========= 基本設定（初期値） =========
-SOUNDFONT_PATH = "../FluidR3_GM/FluidR3_GM.sf2"
+SOUNDFONT_PATH = "../../FluidR3_GM/FluidR3_GM.sf2"
 INITIAL_BPM   = 100
 INITIAL_SWING = 0.00
 MASTER_GAIN   = 0.85
@@ -693,8 +693,8 @@ def start_music():
     global _PLAYER_THREAD, _STARTED
 
     # 1) スケジューラ起動（1回だけでOK）
-    # _sched_th = threading.Thread(target=scheduler_worker, daemon=True)
-    # _sched_th.start()
+    _sched_th = threading.Thread(target=scheduler_worker, daemon=True)
+    _sched_th.start()
 
     # 2) 実行フラグON
     with state_lock:
