@@ -157,19 +157,6 @@ def schedule_note(ch, note, vel, start_beats, length_beats, bar_start_abs, swing
     schedule_at(start, _note_on, ch, n2, v2)
     schedule_at(end,   _note_off, ch, n2)
 
-# ========= 音名 / ボイシング =========
-NOTE = dict(C=60, D=62, E=64, F=65, G=67, A=69, B=71)
-
-VOICINGS = {
-    "C":  [52, 55, 60, 64],
-    "G7": [50, 55, 59, 62],
-    "F":  [53, 57, 60, 65],
-    "Am": [57, 60, 64, 69],
-    "E7": [52, 56, 59, 64],
-    "Gm7":[50, 53, 58, 62],
-    "C7": [48, 52, 55, 58],
-}
-
 # ========= 感情を導入 =========
 def apply_emotion_group(gname: str):
     """# 感情グループのプリセットを状態に反映（次小節から有効・音色/音量は即時）"""
@@ -220,21 +207,6 @@ def apply_emotion_group(gname: str):
         # cur_bpm = state.get("active_bpm", state["bpm"])
         # print(f"[emotion] -> {gname}  (BPM now={cur_bpm:.1f}, next={state['pending_bpm']}, "
         #     f"swing={state['swing']}, key next={state['pending_key']}, guitar={name}, prog={state["pending_prog"]})",)
-
-# ========= 進行プリセット =========
-PROGRESSIONS = {
-    # きらきら星向け（素直）
-    "twinkle": ["C","G7","C","G7", "F","C","G7","C", "G7","F","C","G7", "C","G7","C","C"],
-    # 丸サ進行（IVMaj7→III7→VIm7→Vm7→I7）をポップ寄りに：Fmaj7 E7 Am7 Gm7 C7
-    "marusa":  ["F","E7","Am","Gm7","C7","F","E7","Am","Gm7","C7","F","E7","Am","Gm7","C7","F"],
-    # J-POPで多い 1-5-6-4
-    "pop1541": ["C","G7","Am","F"]*4,
-    # 6-4-1-5（J-POPのしっとり系で定番）
-    "sad6415": ["Am","F","C","G"] * 4,
-}
-
-# ========= ドラムノート（GM） =========
-KICK = 36; SNARE = 38; HH_C = 42; HH_O = 46; CRASH = 49
 
 # ========= 各パート 1小節 ========
 # --- ドラム：8ビート＋軽い16分＆4小節フィル ---
