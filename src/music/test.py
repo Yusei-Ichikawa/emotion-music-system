@@ -6,7 +6,7 @@ import fluidsynth
 import sys
 
 # ========= 基本設定（初期値） =========
-SOUNDFONT_PATH = "FluidR3_GM/FluidR3_GM.sf2"
+SOUNDFONT_PATH = "../../FluidR3_GM/FluidR3_GM.sf2"
 INITIAL_BPM   = 100
 INITIAL_SWING = 0.00
 MASTER_GAIN   = 0.85
