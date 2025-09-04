@@ -490,14 +490,68 @@ def set_expression(most_common_expression, frame):
 
     mapping = {
         ("happy", None):    "group1",
+        ("happy", "happy"):    "group1",
+        ("happy", "neutral"):    "group1",
+
         ("anger", None):    "group2",
         ("fear", None):     "group2",
+        ("anger", "anger"):    "group2",
+        ("fear", "fear"):     "group2",
+        ("anger", "neutral"):    "group2",
+        ("fear", "neutral"):     "group2",
+
         ("sad", None):      "group3",
         ("disgust", None):  "group3",
         ("contempt", None): "group3",
+        ("sad", "sad"):      "group3",
+        ("disgust", "disgust"):  "group3",
+        ("contempt", "contempt"): "group3",
+        ("sad", "neutral"):      "group3",
+        ("disgust", "neutral"):  "group3",
+        ("contempt", "neutral"): "group3",
+
         ("surprise", None): "group4",
+        ("surprise", "surprise"): "group4",
+        ("surprise", "neutral"): "group4",
+
         ("neutral", None):  "group5",
+        ("neutral", "neutral"):  "group5",
         (None, None):       "group5",
+
+        # 1+2, 激情
+        ("happy", "anger"): "group6",
+        ("happy", "fear"):  "group6",
+
+        # 1+3, 複雑な心境
+        ("happy", "sad"):      "group7",
+        ("happy", "disgust"):  "group7",
+        ("happy", "contempt"): "group7",
+
+        # 1+4, サプライズ成功
+        ("happy", "surprise"): "group8",
+
+        # 2+3, 叱責
+        ("anger", "sad"):      "group9",
+        ("anger", "disgust"):  "group9",
+        ("anger", "contempt"): "group9",
+        ("fear", "sad"):      "group9",
+        ("fear", "disgust"):  "group9",
+        ("fear", "contempt"): "group9",
+
+        # 2+4, 突然の雷
+        ("anger", "surprise"): "group10",
+        ("fear", "surprise"):  "group10",
+
+        # 3+4, 悪い知らせ
+        ("sad", "surprise"):      "group11",
+        ("disgust", "surprise"):  "group11",
+        ("contempt", "surprise"): "group11",
+
+	# group1: happy
+	# group2: anger, fear
+	# group3: sad, disgust, contempt
+	# group4: surprise
+	# group5: neutral
     }
 
     g = mapping.get(key)
