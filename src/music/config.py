@@ -1,5 +1,8 @@
 # ========= 基本設定（初期値） =========
-SOUNDFONT_PATH = "../../FluidR3_GM/FluidR3_GM.sf2"
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+SOUNDFONT_PATH = str((_REPO_ROOT / "FluidR3_GM" / "FluidR3_GM.sf2"))
 INITIAL_BPM   = 100
 INITIAL_SWING = 0.00
 MASTER_GAIN   = 0.85
