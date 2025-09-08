@@ -1,3 +1,4 @@
+#test.py
 import time
 import heapq
 import threading
@@ -440,7 +441,7 @@ def apply_emotion_group(gname: str):
 
         cur_bpm = state.get("active_bpm", state["bpm"])
         print(f"[emotion] -> {gname}  (BPM now={cur_bpm:.1f}, next={state['pending_bpm']}, "
-            f"swing={state['swing']}, key next={state['pending_key']}, guitar={name}, prog={state["pending_prog"]})",)
+            f"swing={state['swing']}, key next={state['pending_key']}, guitar={name}, prog={state['pending_prog']})",)
 
 # ========= 進行プリセット =========
 PROGRESSIONS = {
