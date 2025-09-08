@@ -6,23 +6,24 @@
 
 # Member list and role
 
-1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える、最終機能統合
-2. m5281030, NAKAMURA Zen バックシステム構築、推論モデル学習
-3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す、編曲システムの作成
-4. m5291067, SHU Hoshitaka フロントシステム構築
+1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える
+2. m5281030, NAKAMURA Zen システム構築
+3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す
+4. m5291067, SHU Hoshitaka システム構築
 
 ## 🧠 システム概要
 
 - ノートPCのWebカメラで映像を取得
 - 取得した画像をGoogle Colab上のYOLOモデルに送信
-- YOLOで「怒り・悲しみ・笑い・真顔」の4つの感情を推論
-- 推論結果に応じて、ローカルPC上で対応する音楽を再生
+- YOLOで「怒り・嫌悪・恐れ・喜び・悲しみ・驚き・軽蔑・真顔」の８つの感情を推論
+- 推論結果に応じて、常に流れている音楽を編曲
 
 ---
 
 ## 🏗️ 構成ファイル
 
     emotion-music-system/
+        ├── FluidR3_GM                     # サウンドフォントを格納
 
         ├── music/                         # 音楽ファイルを格納
 
@@ -58,6 +59,7 @@
 - OpenCV (`cv2`)
 - ultralytics
 - pygame（ローカルの音楽再生で使用予定）
+- fluidsynth
 
 ---
 
@@ -72,5 +74,8 @@
   * [https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format](https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format)
     * We're going to use 8 emotions:
       * **Angry, Disgust, Fear, Happy,  Sad, Neutral, Contempt**
+
+## 使用サウンドフォント
+- The Fluid Release 3 General-MIDI Soundfont
 
 ## ゴール
