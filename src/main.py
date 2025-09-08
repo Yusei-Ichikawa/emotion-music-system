@@ -1,3 +1,4 @@
+# main.py
 import cv2
 from detector import FaceExpressionDetector
 # from music_player import MusicPlayer
