@@ -6,10 +6,10 @@
 
 # Member list and role
 
-1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える
-2. m5281030, NAKAMURA Zen システム構築
-3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す
-4. m5291067, SHU Hoshitaka システム構築
+1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える、最終機能統合
+2. m5281030, NAKAMURA Zen バックシステム構築、推論モデル学習
+3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す、編曲システムの作成
+4. m5291067, SHU Hoshitaka フロントシステム構築
 
 ## 🧠 システム概要
 
