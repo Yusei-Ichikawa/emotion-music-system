@@ -16,7 +16,18 @@
 - ノートPCのWebカメラで映像を取得
 - 取得した画像をGoogle Colab上のYOLOモデルに送信
 - YOLOで「怒り・嫌悪・恐れ・喜び・悲しみ・驚き・軽蔑・真顔」の８つの感情を推論
-- 推論結果に応じて、常に流れている音楽を編曲
+  - 8つだと音楽に関して作るのが大変なので5つのグループ(happy, [anger, fear], [sad, disgust, contempt], surprise, neutral)にまとめた
+  - 2人の時検出された時のグループをさらに追加した
+    - happy + [anger, fear] -> 激情
+    - happy + [sad, disgust, contempt] -> 複雑な心境
+    - happy + surprise -> サプライズ成功
+    - [anger, fear] + [sad, disgust, contempt] -> 叱責
+    - [anger, fear] + surprise -> 突然の雷
+    - [sad, disgust, contempt] + surprise -> 悪い知らせ
+- 推論結果に応じて、常に流れている音楽(きらきら星)を編曲
+  - 3秒間で最も検出された表情を用いて編曲する
+  - 音楽はピアノ(メロディ), ピアノ(コード伴奏), ギター, ベース, ドラム, ストリングス(弦楽器), ブラス(管楽器)の7つの楽器で構成される
+  - 変化するパラメータはテンポ, キー, 各楽器の音量, メロディの音の高さ, コード進行
 
 ---
 
