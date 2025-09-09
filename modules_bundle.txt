@@ -1,4 +1,5 @@
 ===== FILE: src/main.py =====
+# main.py
 import cv2
 from detector import FaceExpressionDetector
 # from music_player import MusicPlayer
@@ -58,6 +59,7 @@ music_editor.stop_music()
 
 
 ===== FILE: src/detector.py =====
+# detector.py
 import cv2
 from ultralytics import YOLO
 
