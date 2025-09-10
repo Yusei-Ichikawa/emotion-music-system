@@ -22,6 +22,7 @@ venv/
 # 音楽を入れるファイル
 runs/detect/train/weights/*.pt
 yolo11x.pt
+best.pt
 YOLO_format/
 
 FluidR3_GM*
