@@ -10,6 +10,11 @@ import cv2
 import music.config as state_file
 from music.config import *
 
+# グローバル
+_RUNNING = False
+_PLAYER_THREAD = None
+_SCHED_THREAD = None
+
 
 # ========= FluidSynth 初期化 =========
 fs = fluidsynth.Synth()
@@ -93,18 +98,17 @@ def swing_offset(start_beats):
 _event_q = []  # (abs_time, counter, fn, args)
 _event_cv = threading.Condition()
 _event_counter = 0
-_running = True
 
 def scheduler_worker():
     """# 予約イベントを時刻どおりに実行"""
-    while _running:
+    while _RUNNING:
         with _event_cv:
-            while _running and (not _event_q or _event_q[0][0] > time.perf_counter()):
+            while _RUNNING and (not _event_q or _event_q[0][0] > time.perf_counter()):
                 timeout = None
                 if _event_q:
                     timeout = max(0.0, _event_q[0][0] - time.perf_counter())
                 _event_cv.wait(timeout=timeout)
-            if not _running:
+            if not _RUNNING:
                 break
             t, _, fn, args = heapq.heappop(_event_q)
         now = time.perf_counter()
@@ -123,8 +127,9 @@ def schedule_at(abs_time, fn, *args):
         heapq.heappush(_event_q, (abs_time, _event_counter, fn, args))
         _event_cv.notify()
 
-_sched_th = threading.Thread(target=scheduler_worker, daemon=True)
-_sched_th.start()
+# スケジューラ起動（1回だけでOK）なので消した
+# _sched_th = threading.Thread(target=scheduler_worker, daemon=True)
+# _sched_th.start()
 
 # ========= ノート制御 =========
 def _note_on(ch, note, vel): fs.noteon(ch, note, vel)
@@ -162,7 +167,8 @@ def schedule_note(ch, note, vel, start_beats, length_beats, bar_start_abs, swing
 def apply_emotion_group(gname: str):
     """# 感情グループのプリセットを状態に反映（次小節から有効・音色/音量は即時）"""
     if gname not in EMOTION_PRESETS:
-        print(f"[emotion] unknown group: {gname}  (use: group1..group5)")
+        avail = ", ".join(sorted(EMOTION_PRESETS.keys()))
+        print(f"[emotion] unknown group: {gname}  (use: {avail})")
         return
     p = EMOTION_PRESETS[gname]
     if "progression" in p:
@@ -373,7 +379,6 @@ def schedule_brass_bar(chord_name, bar_start_abs):
                 top = max(mids) + 12
                 schedule_note(CH_BRASS, top, base_vel-6, t + len(mids)*micro, 0.22, bar_start_abs, swing=False)
 
-_PLAYER_THREAD = None
 _STARTED = False
 
 def _player_loop():
@@ -381,7 +386,7 @@ def _player_loop():
     base_time = time.perf_counter() + LEAD_SEC
     next_bar_start_abs = base_time
     bar_index = 0
-    while _running:
+    while _RUNNING:
         # ---- 小節頭：保留パラメータを“ここでだけ”実効値に反映 ----
         with state_lock:
             if state["pending_bpm"] is None:
@@ -447,7 +452,6 @@ def _player_loop():
         schedule_melody_bar(i % 16, bar_start_abs)
         schedule_chord_bar(chord_name, bar_start_abs)
         schedule_strings_bar(chord_name, bar_start_abs)
-        schedule_bass_bar(chord_name, bar_start_abs)
 
         # セクション頭でクラッシュ
         if i % 4 == 0:
@@ -466,22 +470,23 @@ def _player_loop():
         bar_index += 1
 
 def start_music():
-    global _PLAYER_THREAD, _STARTED
-
-    # 1) スケジューラ起動（1回だけでOK）
-    _sched_th = threading.Thread(target=scheduler_worker, daemon=True)
-    _sched_th.start()
-
-    # 2) 実行フラグON
-    with state_lock:
-        state["running"] = True
-
-    # 3) プレイヤースレッド開始（main.pyをブロックしない）
+    global _PLAYER_THREAD, _SCHED_THREAD, _RUNNING
+    if _RUNNING:
+        return
+    _RUNNING = True
+    _SCHED_THREAD = threading.Thread(target=scheduler_worker, daemon=True)
+    _SCHED_THREAD.start()
     _PLAYER_THREAD = threading.Thread(target=_player_loop, daemon=True)
     _PLAYER_THREAD.start()
 
 def stop_music():
-    state["running"] = False
+    global _RUNNING
+    if not _RUNNING:
+        return
+    _RUNNING = False
+    with _event_cv:
+        _event_cv.notify_all()
+
 
 def set_expression(most_common_expression, frame):
     if isinstance(most_common_expression, (list, tuple)):
@@ -556,11 +561,19 @@ def set_expression(most_common_expression, frame):
     }
 
     g = mapping.get(key)
-    cv2.putText(frame, g, (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 3)
+    if not g and None not in key and key[0] != key[1]:
+        pair = {key[0], key[1]}
+        if pair in (
+            {"anger","sad"}, {"anger","disgust"}, {"anger","contempt"},
+            {"fear","sad"},  {"fear","disgust"},  {"fear","contempt"}
+        ):
+            g = "group9"
+        elif pair in ({"anger","surprise"}, {"fear","surprise"}):
+            g = "group10"
+
     if g:
+        cv2.putText(frame, g, (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 3)
         apply_emotion_group(g)
-    else:
-        pass
 
 if __name__ == "__main__":
     start_music()
