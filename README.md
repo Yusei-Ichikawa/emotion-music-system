@@ -6,23 +6,43 @@
 
 # Member list and role
 
-1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える、最終機能統合
-2. m5281030, NAKAMURA Zen バックシステム構築、推論モデル学習
-3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す、編曲システムの作成
-4. m5291067, SHU Hoshitaka フロントシステム構築
+1. m5281014, ICHIKAWA Yusei プレゼン作成、見せ方を考える
+2. m5281030, NAKAMURA Zen システム構築
+3. m5291051, MURAKAMI Tatsuya 適切な音楽を探す
+4. m5291067, SHU Hoshitaka システム構築
 
 ## 🧠 システム概要
 
 - ノートPCのWebカメラで映像を取得
 - 取得した画像をGoogle Colab上のYOLOモデルに送信
-- YOLOで「怒り・悲しみ・笑い・真顔」の4つの感情を推論
-- 推論結果に応じて、ローカルPC上で対応する音楽を再生
+- YOLOで「怒り・嫌悪・恐れ・喜び・悲しみ・驚き・軽蔑・真顔」の８つの感情を推論
+  - 8つだと音楽に関して作るのが大変なので5つのグループ(happy, [anger, fear], [sad, disgust, contempt], surprise, neutral)にまとめた
+  - 2人の時検出された時のグループをさらに追加した
+    - happy + [anger, fear] -> 激情
+      - 例: 試合で得点を決めて喜びながらも、相手の反則に怒っている
+    - happy + [sad, disgust, contempt] -> 複雑な心境
+      - 例: 合格発表、卒業式
+    - happy + surprise -> サプライズ成功
+      - 例: レゼントをもらった時など幸せな驚きの瞬間
+    - [anger, fear] + [sad, disgust, contempt] -> 叱責
+      - 例: 片方が責められている
+    - [anger, fear] + surprise -> 突然の雷
+      - 例: 授業中に急に先生に怒られる
+    - [sad, disgust, contempt] + surprise -> 悪い知らせ
+      - 例: 突然の訃報
+- 推論結果に応じて、常に流れている音楽(きらきら星)を編曲
+  - 3秒間で最も検出された表情を用いて編曲する
+  - 音楽はピアノ(メロディ), ピアノ(コード伴奏), ギター, ベース, ドラム, ストリングス(弦楽器), ブラス(管楽器)の7つの楽器で構成される
+  - 変化するパラメータはテンポ, キー, 各楽器の音量, メロディの音の高さ, コード進行
+    - テンポと各楽器の音量は4小説おきくらいに徐々に変化する
+    - <ins>表情(グループ)応じたパラメータがあるのでそれを代入することによって曲が編曲される</ins>
 
 ---
 
 ## 🏗️ 構成ファイル
 
     emotion-music-system/
+        ├── FluidR3_GM                     # サウンドフォントを格納
 
         ├── music/                         # 音楽ファイルを格納
 
@@ -58,6 +78,7 @@
 - OpenCV (`cv2`)
 - ultralytics
 - pygame（ローカルの音楽再生で使用予定）
+- fluidsynth
 
 ---
 
@@ -72,5 +93,8 @@
   * [https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format](https://www.kaggle.com/datasets/fatihkgg/affectnet-yolo-format)
     * We're going to use 8 emotions:
       * **Angry, Disgust, Fear, Happy,  Sad, Neutral, Contempt**
+
+## 使用サウンドフォント
+- The Fluid Release 3 General-MIDI Soundfont
 
 ## ゴール
