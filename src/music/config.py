@@ -130,6 +130,72 @@ EMOTION_PRESETS = {
         "guitar_patch": ("clean", 27),
         "progression": "twinkle",
     },
+
+    # group6 = happy + (anger, fear): 激情
+    # 高揚 + 攻撃性。速め＆前のめり、歪みギター＋推進ベース、ドラム密度高。
+    "group6": {
+        "bpm": 140, "swing": 0.02, "key_shift": +1, "progression": "pop1541",
+        "vol": {"melody":124, "chord":72, "guitar":110, "bass":116, "strings":90, "brass":96},
+        "drum_energy": 3, "drum_hat_div": 16, "drum_fill_rate": 2,
+        "bass_style": "drive", "melody_oct": +12,
+        "vel_scale": {"melody":1.12, "chord":0.82, "guitar":1.18, "bass":1.15, "brass":1.05},
+        "guitar_patch": ("dist", 30),
+    },
+
+    # group7 = happy + (sad, disgust, contempt): 複雑な心境
+    # 明暗が同居。中速、スイング少し、和声は切なめ 6-4-1-5。
+    "group7": {
+        "bpm": 96, "swing": 0.10, "key_shift": -1, "progression": "sad6415",
+        "vol": {"melody":120, "chord":78, "guitar":88, "bass":106, "strings":90, "brass":88},
+        "drum_energy": 1, "drum_hat_div": 16, "drum_fill_rate": 1,
+        "bass_style": "pump", "melody_oct": 0,
+        "vel_scale": {"melody":1.05, "chord":0.92, "guitar":0.95, "bass":1.00, "brass":0.90},
+        "guitar_patch": ("clean", 27),
+    },
+
+    # group8 = happy + surprise: サプライズ成功
+    # 明るく弾む。速め、32分ハットでキラキラ、フィル多め、上方転調寄り。
+    "group8": {
+        "bpm": 128, "swing": 0.12, "key_shift": +3, "progression": "pop1541",
+        "vol": {"melody":126, "chord":72, "guitar":96, "bass":110, "strings":90, "brass":98},
+        "drum_energy": 2, "drum_hat_div": 32, "drum_fill_rate": 2,
+        "bass_style": "drive", "melody_oct": +12,
+        "vel_scale": {"melody":1.20, "chord":0.82, "guitar":1.02, "bass":1.06, "brass":1.06},
+        "guitar_patch": ("clean", 27),
+    },
+
+    # group9 = (anger, fear) + (sad, disgust, contempt): 叱責
+    # 厳しさと重さ。遅め〜中速、低め転調、スネア強め・フィル控えめ、どっしり。
+    "group9": {
+        "bpm": 84, "swing": 0.02, "key_shift": -4, "progression": "marusa",
+        "vol": {"melody":112, "chord":68, "guitar":86, "bass":118, "strings":90, "brass":92},
+        "drum_energy": 2, "drum_hat_div": 16, "drum_fill_rate": 0,
+        "bass_style": "pump", "melody_oct": -12,
+        "vel_scale": {"melody":0.98, "chord":0.80, "guitar":0.95, "bass":1.18, "brass":1.00},
+        "guitar_patch": ("dist", 30),
+    },
+
+    # group10 = (anger, fear) + surprise: 突然の雷
+    # 瞬間的な強打。速い・直進、スイング無し、ハット細かくフィル多め、ブラス強調。
+    "group10": {
+        "bpm": 136, "swing": 0.00, "key_shift": +2, "progression": "pop1541",
+        "vol": {"melody":120, "chord":68, "guitar":112, "bass":116, "strings":90, "brass":104},
+        "drum_energy": 3, "drum_hat_div": 32, "drum_fill_rate": 2,
+        "bass_style": "drive", "melody_oct": 0,
+        "vel_scale": {"melody":1.02, "chord":0.80, "guitar":1.22, "bass":1.15, "brass":1.18},
+        "guitar_patch": ("dist", 30),
+    },
+
+    # group11 = (sad, disgust, contempt) + surprise: 悪い知らせ
+    # 静かな落差。遅め、スイング少し、フィル無し、低め転調、メロ下オクターブ。
+    "group11": {
+        "bpm": 72, "swing": 0.08, "key_shift": -5, "progression": "sad6415",
+        "vol": {"melody":110, "chord":64, "guitar":78, "bass":100, "strings":90, "brass":84},
+        "drum_energy": 0, "drum_hat_div": 8, "drum_fill_rate": 0,
+        "bass_style": "pump", "melody_oct": -12,
+        "vel_scale": {"melody":0.95, "chord":0.75, "guitar":0.85, "bass":0.96, "brass":0.85},
+        "guitar_patch": ("clean", 27),
+    },
 }
 
 def make_initial_state():
@@ -182,3 +248,70 @@ def make_initial_state():
         "brass":   s.get("brass_vol",   95) if 'CH_BRASS'   in globals() else None,
     }
     return s
+
+
+mapping = {
+    ("happy", None):    "group1",
+    ("happy", "happy"):    "group1",
+    ("happy", "neutral"):    "group1",
+
+    ("anger", None):    "group2",
+    ("fear", None):     "group2",
+    ("anger", "anger"):    "group2",
+    ("fear", "fear"):     "group2",
+    ("anger", "neutral"):    "group2",
+    ("fear", "neutral"):     "group2",
+
+    ("sad", None):      "group3",
+    ("disgust", None):  "group3",
+    ("contempt", None): "group3",
+    ("sad", "sad"):      "group3",
+    ("disgust", "disgust"):  "group3",
+    ("contempt", "contempt"): "group3",
+    ("sad", "neutral"):      "group3",
+    ("disgust", "neutral"):  "group3",
+    ("contempt", "neutral"): "group3",
+
+    ("surprise", None): "group4",
+    ("surprise", "surprise"): "group4",
+    ("surprise", "neutral"): "group4",
+
+    ("neutral", None):  "group5",
+    ("neutral", "neutral"):  "group5",
+    (None, None):       "group5",
+
+    # 1+2, 激情
+    ("happy", "anger"): "group6",
+    ("happy", "fear"):  "group6",
+
+    # 1+3, 複雑な心境
+    ("happy", "sad"):      "group7",
+    ("happy", "disgust"):  "group7",
+    ("happy", "contempt"): "group7",
+
+    # 1+4, サプライズ成功
+    ("happy", "surprise"): "group8",
+
+    # 2+3, 叱責
+    ("anger", "sad"):      "group9",
+    ("anger", "disgust"):  "group9",
+    ("anger", "contempt"): "group9",
+    ("fear", "sad"):      "group9",
+    ("fear", "disgust"):  "group9",
+    ("fear", "contempt"): "group9",
+
+    # 2+4, 突然の雷
+    ("anger", "surprise"): "group10",
+    ("fear", "surprise"):  "group10",
+
+    # 3+4, 悪い知らせ
+    ("sad", "surprise"):      "group11",
+    ("disgust", "surprise"):  "group11",
+    ("contempt", "surprise"): "group11",
+
+# group1: happy
+# group2: anger, fear
+# group3: sad, disgust, contempt
+# group4: surprise
+# group5: neutral
+}
